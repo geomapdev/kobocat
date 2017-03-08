@@ -61,7 +61,7 @@ def image_urls_dict(instance):
                 get_path(a.media_file.name, suffix))
         else:
             url = a.media_file.url
-	file_basename = os.path.basename(filename)
+	file_basename = str(os.path.basename(filename))
 	if url.startswith('/') and hasattr(settings,'KOBOCAT_URL'):
 	    url=settings.KOBOCAT_URL+url
         urls[file_basename]=url
