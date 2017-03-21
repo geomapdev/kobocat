@@ -63,8 +63,8 @@ def image_urls_dict(instance):
             url = a.media_file.url
 	file_basename = str(os.path.basename(filename))
 	if url.startswith('/') and hasattr(settings,'KOBOCAT_URL'):
-	    url=settings.KOBOCAT_URL+url
-        urls[file_basename]=url
+	    url = settings.KOBOCAT_URL+url
+        urls[file_basename] = url
     return urls
 
 def parse_xform_instance(xml_str):
@@ -191,8 +191,7 @@ def enketo_url(form_url, id_string, instance_xml=None,
         values.update({
             'instance': instance_xml,
             'instance_id': instance_id,
-            'return_url': return_url,
-            'instance_attachments': instance_attachments
+            'return_url': return_url
         })
         for key, value in instance_attachments.iteritems():
             values.update({
