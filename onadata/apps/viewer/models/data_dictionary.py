@@ -36,6 +36,7 @@ def upload_to(instance, filename, username=None):
     if instance:
         username = instance.xform.user.username
     return os.path.join(
+        'users',
         username,
         'xls',
         os.path.split(filename)[1]
