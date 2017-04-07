@@ -747,6 +747,7 @@ def generate_export(export_type, extension, username, id_string,
         filename = increment_index_in_filename(filename)
 
     file_path = os.path.join(
+        'users',
         username,
         'exports',
         id_string,
@@ -836,6 +837,7 @@ def generate_attachments_zip_export(
                           datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     filename = basename + "." + extension
     file_path = os.path.join(
+        'users',
         username,
         'exports',
         id_string,
@@ -875,6 +877,7 @@ def generate_kml_export(
                           datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
     filename = basename + "." + extension
     file_path = os.path.join(
+        'users',
         username,
         'exports',
         id_string,

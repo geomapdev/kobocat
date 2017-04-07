@@ -37,6 +37,7 @@ title_pattern = re.compile(r"<h:title>([^<]+)</h:title>")
 
 def upload_to(instance, filename):
     return os.path.join(
+        'users',
         instance.user.username,
         'xls',
         os.path.split(filename)[1])

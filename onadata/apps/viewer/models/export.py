@@ -140,7 +140,7 @@ class Export(models.Model):
 
     def _update_filedir(self):
         assert(self.filename)
-        self.filedir = os.path.join(self.xform.user.username,
+        self.filedir = os.path.join('users',self.xform.user.username,
                                     'exports', self.xform.id_string,
                                     self.export_type)
 
