@@ -191,9 +191,12 @@ def enketo_url(form_url, id_string, instance_xml=None,
         values.update({
             'instance': instance_xml,
             'instance_id': instance_id,
-            'return_url': return_url,
-            'instance_attachments': instance_attachments
+            'return_url': return_url
         })
+        for key, value in instance_attachments.iteritems():
+            values.update({
+                'instance_attachments[' + key + ']': value
+            })
     req = requests.post(url, data=values,
                         auth=(settings.ENKETO_API_TOKEN, ''), verify=False)
     if req.status_code in [200, 201]:
