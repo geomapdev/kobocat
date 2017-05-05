@@ -50,6 +50,7 @@ def image_urls(instance):
         urls.append(url)
     return urls
 
+
 def parse_xform_instance(xml_str):
     """
     'xml_str' is a str object holding the XML of an XForm
