@@ -13,6 +13,8 @@ FormJSONManager = function(url, callback)
     this.url = url;
     this.callback = callback;
     this.geopointQuestions = [];
+    this.geotraceQuestions = [];
+    this.geoshapeQuestions = [];
     this.selectOneQuestions = [];
     this.supportedLanguages = [];
     this.questions = {};
@@ -66,6 +68,10 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
             this.selectOneQuestions.push(question);
         if(question[constants.TYPE] == "geopoint" || question[constants.TYPE] == "gps")
             this.geopointQuestions.push(question);
+        if(question[constants.TYPE] == "geotrace")
+            this.geotraceQuestions.push(question);
+        if(question[constants.TYPE] == "geoshape")
+            this.geoshapeQuestions.push(question);
     }
 };
 
@@ -98,6 +104,18 @@ FormJSONManager.prototype.getGeoPointQuestion = function()
 {
     if(this.geopointQuestions.length > 0)
         return this.geopointQuestions[0];
+    return null;
+};
+FormJSONManager.prototype.getGeoTraceQuestion = function()
+{
+    if(this.geotraceQuestions.length > 0)
+        return this.geotraceQuestions[0];
+    return null;
+};
+FormJSONManager.prototype.getGeoShapeQuestion = function()
+{
+    if(this.geoshapeQuestions.length > 0)
+        return this.geoshapeQuestions[0];
     return null;
 };
 
