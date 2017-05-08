@@ -4,7 +4,13 @@ var constants = {
     //formhub query syntax constants
     START: "start", LIMIT: "limit", COUNT: "count", FIELDS: "fields",
     //
-    GEOLOCATION: "_geolocation"
+    GEOLOCATION: "_geolocation",
+    //
+    GEOPOINTS: "_geopoints",
+    //
+    GEOTRACES: "_geotraces",
+    //
+    GEOSHAPES: "_geoshapes",
 };
 
 // used to load and manage form questions
@@ -13,6 +19,8 @@ FormJSONManager = function(url, callback)
     this.url = url;
     this.callback = callback;
     this.geopointQuestions = [];
+    this.geotraceQuestions = [];
+    this.geoshapeQuestions = [];
     this.selectOneQuestions = [];
     this.supportedLanguages = [];
     this.questions = {};
@@ -66,6 +74,10 @@ FormJSONManager.prototype._parseQuestions = function(questionData, parentQuestio
             this.selectOneQuestions.push(question);
         if(question[constants.TYPE] == "geopoint" || question[constants.TYPE] == "gps")
             this.geopointQuestions.push(question);
+        if(question[constants.TYPE] == "geotrace")
+            this.geotraceQuestions.push(question);
+        if(question[constants.TYPE] == "geoshape")
+            this.geoshapeQuestions.push(question);
     }
 };
 
@@ -98,6 +110,20 @@ FormJSONManager.prototype.getGeoPointQuestion = function()
 {
     if(this.geopointQuestions.length > 0)
         return this.geopointQuestions[0];
+    return null;
+};
+
+FormJSONManager.prototype.getGeoTraceQuestion = function()
+{
+    if(this.geotraceQuestions.length > 0)
+        return this.geotraceQuestions[0];
+    return null;
+};
+
+FormJSONManager.prototype.getGeoShapeQuestion = function()
+{
+    if(this.geoshapeQuestions.length > 0)
+        return this.geoshapeQuestions[0];
     return null;
 };
 
@@ -291,8 +317,18 @@ FormResponseManager.prototype._toGeoJSON = function()
 {
     var features = [];
     var geopointQuestionName = constants.GEOLOCATION;
+
+    var geopointsQuestionName = constants.GEOPOINTS;
+    var geotracesQuestionName = constants.GEOTRACES;
+    var geoshapesQuestionName = constants.GEOLSHAPES;
+
     _(this.responses).each(function (response) {
         var gps = response[geopointQuestionName];
+
+        var gpsPoints = response[geopointsQuestionName];
+        var gpsTraces = response[geotracesQuestionName];
+        var gpsShapes = response[geoshapesQuestionName];
+
         if(gps && gps[0] && gps[1])
         {
             var lat = gps[0];
@@ -301,7 +337,27 @@ FormResponseManager.prototype._toGeoJSON = function()
             var geometry = {"type":"Point", "coordinates": [lng, lat]};
             var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
             features.push(feature);
+        } else if(gpsPoints){
+            var points = [];
+
+            var geometry = {"type":"MultiPoint", "coordinates":points};
+            var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
+            features.push(feature);
+        } else if (gpsTraces){
+            var lines = [];
+
+            var geometry = {"type":"MultiLineString", "coordinates":lines};
+            var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
+            features.push(feature);
+        } else if (gpsShapes){
+            var polygons = [];
+
+            var geometry = {"type":"MultiPolygon", "coordinates":polygons};
+            var feature = {"type": "Feature", "id": response._id, "geometry":geometry, "properties":response};
+            features.push(feature);
         }
+        //  try adding all geometries to one feature
+
     });
 
     this.geoJSON = {"type":"FeatureCollection", "features":features};
@@ -313,6 +369,7 @@ FormResponseManager.prototype._toHexbinGeoJSON = function(latLongFilter)
     var features = [];
     var latLngArray = [];
     var geopointQuestionName = constants.GEOLOCATION;
+
     // The following functions needed hexbin-js doesn't deal well with negatives
     function fixlng(n) { n = parseFloat(n); return (n < 0 ? 360 + n : n); }
     function fixlnginv(n) { n = parseFloat(n); return (n > 180 ? n - 360 : n); }
