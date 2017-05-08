@@ -5,6 +5,7 @@ from hashlib import md5
 from django.db import models
 
 from instance import Instance
+from datetime import datetime
 
 def get_first_value(d,value,default=None):
     if value in d:
@@ -18,20 +19,13 @@ def get_first_value(d,value,default=None):
 def upload_to(attachment, filename):
     instance = attachment.instance
     xform = instance.xform
-    instance_date = get_first_value(instance.json, 'today')
-    if not instance_date:
-        instance_time = get_first_value(instance.json, 'submission_time')
-        instance_date = instance_time[:10] if (instance_time and len(instance_time)>10) else None
-    instance_month = instance_date[:7] if (instance_date len(instance_date)==10) else None
-    #if instance_date and instance_month:
-    #    final_date = os.path.join(instance_month,instance_date)
-    #else:
-    #    final_date = 'no_date'
+    today = datetime.now().strftime("%Y-%m-%d")
+    instance_date = get_first_value(instance.json, 'today',today)
+    instance_date_path = os.path.join(instance_date[:7],instance_date) if len(instance_date)==10 else 'no_date'
     return os.path.join(
 	get_first_value(instance.json,'swca_office','no_office'),
 	get_first_value(instance.json,'project_number','no_project'),
-        instance_month,
-        instance_date,
+        instance_date_path,
         xform.user.username,
         #'attachments',
         # xform.uuid or 'form',
