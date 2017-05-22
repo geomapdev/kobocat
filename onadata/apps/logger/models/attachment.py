@@ -8,12 +8,13 @@ from instance import Instance
 from datetime import datetime
 
 def get_first_value(d,value,default=None):
-    if value in d:
-        return d[value]
-    for k in d:
-        if isinstance(d[k], list):
-            for i in d[k]:
-                return get_first_value(i,value)
+    if isinstance(d,list):
+        if value in d:
+            return d[value]
+        for k in d:
+            if isinstance(d[k], list):
+                for i in d[k]:
+                    return get_first_value(i,value)
     return default
 
 def upload_to(attachment, filename):
